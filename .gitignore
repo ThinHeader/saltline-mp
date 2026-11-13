@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist_old/
+dist_prev*/
+.DS_Store
+*.log
+.vite/
+docs/diag-*.png
+Thumbs.db
+.workbuddy/
