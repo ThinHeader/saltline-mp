@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>Saltline · 抖音图文</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg: #080b0f;
+        --ink: #eaf1f6;
+        --muted: #93a1ad;
+        --dim: #5f6c78;
+        --amber: #ffb454;
+        --cyan: #7fd7ff;
+        --red: #ff6f5e;
+        --line: rgba(255, 255, 255, 0.14);
+      }
+      html, body { background: #000; }
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        width: 1080px;
+      }
+      .slide {
+        position: relative;
+        width: 1080px;
+        height: 1440px;
+        overflow: hidden;
+        background: var(--bg);
+        isolation: isolate;
+      }
+      .shot {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+      }
+      .shade {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(8, 11, 15, 0.86) 0%, rgba(8, 11, 15, 0.3) 32%, rgba(8, 11, 15, 0.72) 66%, rgba(8, 11, 15, 0.98) 100%);
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.15;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='0.55'/></svg>");
+      }
+      .pad {
+        position: absolute;
+        inset: 0;
+        padding: 96px 88px 172px;
+        display: flex;
+        flex-direction: column;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 21px;
+        letter-spacing: 0.3em;
+        color: var(--amber);
+        font-weight: 600;
+      }
+      .top i { display: block; width: 46px; height: 2px; background: var(--amber); }
+      .foot {
+        position: absolute;
+        left: 88px;
+        right: 88px;
+        bottom: 58px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 20px;
+        letter-spacing: 0.22em;
+        color: var(--dim);
+        z-index: 4;
+      }
+      .foot b { color: var(--muted); font-weight: 600; letter-spacing: 0.16em; }
+      .spacer { flex: 1; }
+      .wm {
+        position: absolute;
+        right: -14px;
+        bottom: 96px;
+        font-size: 300px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.05em;
+        color: rgba(255, 255, 255, 0.045);
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      h1 { font-size: 100px; line-height: 1.08; font-weight: 800; letter-spacing: -0.02em; }
+      h2 { font-size: 76px; line-height: 1.18; font-weight: 800; letter-spacing: -0.015em; }
+      p.body { font-size: 34px; line-height: 1.78; color: #c6cfd6; letter-spacing: 0.01em; }
+      .hl { color: var(--amber); }
+      .cool { color: var(--cyan); }
+      em { font-style: normal; color: var(--ink); font-weight: 700; box-shadow: inset 0 -0.34em 0 rgba(255, 180, 84, 0.2); }
+      .kicker { font-size: 29px; line-height: 1.72; color: var(--muted); letter-spacing: 0.02em; }
+
+      /* cover */
+      .cover h1 { font-size: 114px; line-height: 1.06; }
+      .cover .sub { margin-top: 32px; font-size: 32px; color: #b9c4cd; line-height: 1.62; }
+      .cover .tag {
+        display: inline-block;
+        align-self: flex-start;
+        margin-bottom: 38px;
+        padding: 12px 22px;
+        border: 1px solid rgba(255, 180, 84, 0.55);
+        color: var(--amber);
+        font-size: 22px;
+        letter-spacing: 0.18em;
+        font-weight: 600;
+      }
+      .cover .row-tags { margin-top: 40px; display: flex; gap: 18px; font-size: 24px; color: var(--muted); letter-spacing: 0.12em; }
+
+      /* stats */
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 46px; }
+      .stat { border-top: 2px solid rgba(255, 180, 84, 0.5); padding-top: 20px; }
+      .stat b { display: block; font-size: 92px; line-height: 1; font-weight: 800; letter-spacing: -0.03em; }
+      .stat span { display: block; margin-top: 12px; font-size: 23px; color: var(--muted); letter-spacing: 0.08em; }
+
+      /* list */
+      .list { margin-top: 44px; }
+      .item { display: flex; gap: 28px; padding: 28px 0; border-top: 1px solid var(--line); }
+      .item:last-child { border-bottom: 1px solid var(--line); }
+      .item i { flex: 0 0 64px; font-style: normal; font-size: 25px; font-weight: 800; color: var(--amber); padding-top: 4px; }
+      .item strong { display: block; font-size: 33px; font-weight: 700; line-height: 1.42; }
+      .item span { display: block; margin-top: 8px; font-size: 26px; line-height: 1.58; color: var(--muted); }
+
+      /* fail card */
+      .fail { background: #0a0c10; }
+      .fail .cross { display: flex; gap: 26px; padding: 36px 0; border-top: 1px solid rgba(255, 111, 94, 0.26); font-size: 32px; line-height: 1.5; color: #d6dde3; }
+      .fail .cross b { flex: 0 0 38px; color: var(--red); font-size: 29px; font-weight: 800; padding-top: 3px; }
+      .fail .cross s { flex: 1; text-decoration: none; }
+      .verdict { margin-top: auto; padding-top: 42px; border-top: 2px solid rgba(255, 111, 94, 0.4); font-size: 40px; line-height: 1.5; font-weight: 700; }
+      .verdict span { color: var(--red); }
+
+      /* quote */
+      .quote h2 { font-size: 80px; line-height: 1.34; }
+      .quote .sig { margin-top: 34px; font-size: 27px; color: var(--dim); letter-spacing: 0.14em; }
+
+      /* chips */
+      .chips { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
+      .chip {
+        font-family: "Cascadia Mono", Consolas, monospace;
+        font-size: 25px;
+        padding: 14px 22px;
+        border: 1px solid rgba(127, 215, 255, 0.35);
+        color: var(--cyan);
+      }
+
+      /* split */
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 44px; }
+      .split > div { border: 1px solid var(--line); padding: 30px 28px; }
+      .split h4 { font-size: 23px; letter-spacing: 0.18em; color: var(--muted); font-weight: 600; margin-bottom: 20px; }
+      .split p { font-size: 29px; line-height: 1.66; color: #ccd5dc; }
+
+      /* image bands — fade into the page instead of a hard seam */
+      .band {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 620px;
+        background-size: cover;
+        background-position: center 34%;
+        -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 250px);
+        mask-image: linear-gradient(180deg, transparent 0, #000 250px);
+        z-index: 0;
+      }
+      .band:not(.band-top)::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 190px;
+        background: linear-gradient(0deg, rgba(8, 11, 15, 0.97) 0%, rgba(8, 11, 15, 0.55) 55%, rgba(8, 11, 15, 0) 100%);
+      }
+      .band-top::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 150px;
+        background: linear-gradient(180deg, rgba(8, 11, 15, 0.98) 0%, rgba(8, 11, 15, 0) 100%);
+      }
+      .band-top {
+        top: 0;
+        bottom: auto;
+        height: 560px;
+        background-position: center 66%;
+        -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 190px);
+        mask-image: linear-gradient(0deg, transparent 0, #000 190px);
+      }
+      .band-dark::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(8, 11, 15, 0.35) 0%, rgba(8, 11, 15, 0.55) 60%, rgba(8, 11, 15, 0.9) 100%);
+      }
+
+      /* end */
+      .end .repo {
+        margin-top: 38px;
+        align-self: flex-start;
+        font-family: "Cascadia Mono", Consolas, monospace;
+        font-size: 26px;
+        color: var(--cyan);
+        border: 1px solid rgba(127, 215, 255, 0.35);
+        padding: 18px 24px;
+      }
+      .end .note { margin-top: 28px; font-size: 26px; line-height: 1.74; color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <!-- ============ 01 cover ============ -->
+    <section class="slide cover">
+      <div class="shot" style="background-image: url('../douyin-raw/solo-reload.png')"></div>
+      <div class="shade"></div>
+      <div class="grain"></div>
+      <div class="pad">
+        <div class="spacer"></div>
+        <div class="tag">FABLE 5.2 一次生成</div>
+        <h1>打开网页<br />就能玩一个<br />3D 射击游戏</h1>
+        <div class="sub">没有安装包，没有下载按钮。<br />只有一行网址，和一个雨夜的港口。</div>
+        <div class="row-tags"><span>浏览器</span><span>·</span><span>单人战役</span><span>·</span><span>局域网联机</span></div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>01 / 09</span></div>
+    </section>
+
+    <!-- ============ 02 gameplay ============ -->
+    <section class="slide">
+      <div class="band band-top" style="background-image: url('../douyin-raw/solo-enemy2.png')"></div>
+      <div class="grain"></div>
+      <div class="pad" style="padding-top: 566px">
+        <div class="top"><i></i>先说能玩什么</div>
+        <h2 style="margin-top: 28px">三个中继<br />一把枪<br />两种敌人</h2>
+        <p class="body" style="margin-top: 32px">按住 <span class="hl">E</span> 切断中继，然后活着走到码头登船。<br />听起来简单，直到你发现敌人在呼叫增援。</p>
+        <div class="stats">
+          <div class="stat"><b>3</b><span>通讯中继</span></div>
+          <div class="stat"><b>2</b><span>敌人类型</span></div>
+          <div class="stat"><b>1</b><span>把枪 · 30/150</span></div>
+        </div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>02 / 09</span></div>
+    </section>
+
+    <!-- ============ 03 multiplayer ============ -->
+    <section class="slide">
+      <div class="pad" style="padding-bottom: 700px">
+        <div class="top"><i></i>更离谱的是还能联机</div>
+        <h2 style="margin-top: 30px">4 位房间码<br />先拿 15 杀</h2>
+        <p class="body" style="margin-top: 30px">
+          <em>2 到 8 个人</em>，一台电脑开服，<br />其他人浏览器里输码就进。
+        </p>
+      </div>
+      <div class="band" style="height: 760px; background-image: url('../douyin-raw/mp-lobby-tight.png'); background-position: center 44%"></div>
+      <div class="grain"></div>
+      <div class="foot"><b>SALTLINE</b><span>03 / 09</span></div>
+    </section>
+
+    <!-- ============ 04 the turn ============ -->
+    <section class="slide fail">
+      <div class="grain"></div>
+      <div class="wm">DEMO</div>
+      <div class="pad">
+        <div class="top" style="color: #ff6f5e"><i style="background: #ff6f5e"></i>但我第一次打开它的时候</div>
+        <h2 style="margin-top: 32px">画面是真好看<br />玩十分钟<br />发现是空壳</h2>
+        <p class="kicker" style="margin-top: 34px; color: #8e9aa5">不是 bug 多，是三处都断在最关键的地方。</p>
+        <div style="margin-top: 30px">
+          <div class="cross"><b>✕</b><s>F 近战按了没反应 —— 键位和音效都写了，<em>伤害判定没有</em></s></div>
+          <div class="cross"><b>✕</b><s>多人模式开不了房 —— 建房按钮<em>永远处于隐藏状态</em></s></div>
+          <div class="cross"><b>✕</b><s>进图之后枪打不响 —— 武器被隐藏，<em>开火判定直接失败</em></s></div>
+        </div>
+        <div class="verdict"><span>这就是</span> Demo 和游戏之间<br />真正的距离。</div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>04 / 09</span></div>
+    </section>
+
+    <!-- ============ 05 origin ============ -->
+    <section class="slide">
+      <div class="band" style="height: 520px; background-image: url('../douyin-raw/solo-enemy.png'); background-position: center 40%"></div>
+      <div class="grain"></div>
+      <div class="pad" style="padding-bottom: 520px">
+        <div class="top"><i></i>它是什么来路</div>
+        <h2 style="margin-top: 32px">一份从 Claude<br />Artifact 里<br />恢复出来的产物</h2>
+        <p class="body" style="margin-top: 36px">
+          一个 <em>1.4MB 的单文件 HTML</em>，66 个模块全压成一坨。<br />没有源码、没有注释，变量名是 <span class="cool">a</span>、<span class="cool">b</span>、<span class="cool">T</span>、<span class="cool">ve</span>。
+        </p>
+        <div class="chips">
+          <span class="chip">1,423,413 bytes</span>
+          <span class="chip">66 modules</span>
+          <span class="chip">SHA-256 校验</span>
+        </div>
+        <div class="spacer"></div>
+        <p class="kicker" style="margin-bottom: 26px">奇怪的是：它跑起来是真的。<br />光影、雨、水面、枪声，一样不缺。</p>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>05 / 09</span></div>
+    </section>
+
+    <!-- ============ 06 why ============ -->
+    <section class="slide quote">
+      <div class="shot" style="background-image: url('../douyin-raw/solo-combat.png'); opacity: 0.3"></div>
+      <div class="shade"></div>
+      <div class="grain"></div>
+      <div class="pad">
+        <div class="top"><i></i>我为什么非要拆它</div>
+        <h2 style="margin-top: 56px">
+          我不信一个<br />对话框能写出<br />完整的游戏，<br />
+          <span class="hl">也不信它只能<br />是个炫技视频。</span>
+        </h2>
+        <div class="spacer"></div>
+        <p class="body" style="font-size: 31px">所以我把它拆开，看它到底是空心的，还是真有东西。</p>
+        <div class="sig">结论：有真东西，但得有人把它补完。</div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>06 / 09</span></div>
+    </section>
+
+    <!-- ============ 07 the work ============ -->
+    <section class="slide">
+      <div class="grain"></div>
+      <div class="pad">
+        <div class="top"><i></i>三天里我做了什么</div>
+        <h2 style="margin: 28px 0 4px">把它从 Demo<br />修成能玩的</h2>
+        <div class="list">
+          <div class="item"><i>01</i><div><strong>把压缩产物还原成工程</strong><span>66 个模块逐行拆回来，补上可读命名和 source map</span></div></div>
+          <div class="item"><i>02</i><div><strong>补上真正的近战</strong><span>2.6 米扇形判定、0.48 秒挥击、65 伤害和枪托动画</span></div></div>
+          <div class="item"><i>03</i><div><strong>查出枪为什么打不响</strong><span>武器被隐藏 → 开火判定永远失败，一行修复</span></div></div>
+          <div class="item"><i>04</i><div><strong>让敌人能被看见</strong><span>深灰装甲在阴天港口里融进背景，加了一圈轮廓光</span></div></div>
+          <div class="item"><i>05</i><div><strong>把多人从零修通</strong><span>大厅按钮、人数校验、击杀与死亡统计，一路修到能打完一局</span></div></div>
+        </div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>07 / 09</span></div>
+    </section>
+
+    <!-- ============ 08 netcode ============ -->
+    <section class="slide">
+      <div class="grain"></div>
+      <div class="wm">P2P</div>
+      <div class="pad">
+        <div class="top"><i></i>联机是我加的最大一块</div>
+        <h2 style="margin-top: 30px">服务器不负责<br />判定谁打中谁</h2>
+        <div class="split">
+          <div>
+            <h4>服务器只管</h4>
+            <p>房间成员<br />比分与死亡<br />胜负判定</p>
+          </div>
+          <div>
+            <h4>客户端自己管</h4>
+            <p>射线命中<br />扣血与上报死亡<br />地图按种子生成</p>
+          </div>
+        </div>
+        <p class="body" style="margin-top: 36px">
+          地图不传输，所有端用同一个种子生成；<br />谁被打中，谁自己扣血、自己上报死亡。
+        </p>
+        <div class="spacer"></div>
+        <p class="kicker">所以它能在家里那台破笔记本上跑起来，<br />不需要什么服务器集群。</p>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>08 / 09</span></div>
+    </section>
+
+    <!-- ============ 09 end ============ -->
+    <section class="slide end">
+      <div class="band" style="height: 560px; background-image: url('../douyin-raw/solo-enemy2.png'); background-position: center 58%"></div>
+      <div class="grain"></div>
+      <div class="pad" style="padding-bottom: 600px">
+        <div class="top"><i></i>现在它长这样</div>
+        <h2 style="margin-top: 30px">
+          AI 生成的<br />不是成品，<br />
+          <span class="hl">是一块很好的地基。</span>
+        </h2>
+        <div class="repo">github.com/ThinHeader/saltline-mp</div>
+        <div class="note">线上只能玩单人战役，静态托管跑不了房间服务器；<br />想联机，局域网里一行命令起服务。</div>
+      </div>
+      <div class="foot"><b>SALTLINE</b><span>09 / 09</span></div>
+    </section>
+  </body>
+</html>

@@ -36,7 +36,7 @@ const MP_STYLE = `
 .mp-players .mp-p b.host { color: #ffc46b; }
 .mp-players .mp-p .kd { opacity: .6; font-size: 12px; white-space: nowrap; }
 .mp-wrap .btn:disabled { opacity: .38; cursor: default; pointer-events: none; }
-.mp-note { font-size: 12px; opacity: .55; margin-top: 10px; }
+.mp-note { font-size: 13px; line-height: 1.5; opacity: .62; margin-top: 12px; }
 .mp-board { position: absolute; top: calc(74px + var(--sab, 0px)); right: 18px; min-width: 230px; background: rgba(8,12,16,.62); border: 1px solid rgba(255,255,255,.12); padding: 8px 0; display: none; z-index: 5; pointer-events: none; backdrop-filter: blur(2px); }
 .mp-board.on { display: block; }
 .mp-board h4 { margin: 0 12px 6px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; opacity: .6; font-weight: 600; }
@@ -93,7 +93,7 @@ function createMultiplayer(context) {
         <button class="btn" data-act="mp-leave-room" hidden>Leave room</button>
         <button class="btn" data-act="mp-leave">Back to title</button>
       </div>
-      <p class="mp-note">One machine runs <b>npm run lan</b> (or <b>npm run mp</b> next to <b>npm run dev</b>). Everyone opens the same address, then the host shares the 4-character room code. Room server port ${new URL(wsUrl()).port} must be reachable. ${MIN_PLAYERS}\u2013${MAX_PLAYERS} players, first to ${KILL_TARGET} kills wins.</p>
+      <p class="mp-note">One machine runs <b>npm run lan</b>; everyone else just opens that address. The host shares the 4-character room code. ${MIN_PLAYERS}\u2013${MAX_PLAYERS} players, first to ${KILL_TARGET} kills wins.</p>
     </div>`;
   root.appendChild(sec);
 

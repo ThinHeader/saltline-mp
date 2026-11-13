@@ -6,5 +6,8 @@ dist_prev*/
 *.log
 .vite/
 docs/diag-*.png
+docs/douyin-raw/
+scripts/tmp-*.mjs
 Thumbs.db
 .workbuddy/
+dist_tmp_build/
